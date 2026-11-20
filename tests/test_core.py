@@ -43,9 +43,26 @@ def test_milestone_2():
 
 
 # Milestone 3: Train the model using the prepared dataset and Hugging Face Trainer.
-@pytest.mark.skip(reason="remove this line when you start milestone 3")
-def test_milestone_3():
-    raise NotImplementedError("write the test for milestone 3")
+def test_milestone_3(tmp_path):
+    from transformers import Trainer
+    from app.core import milestone_2, milestone_3
+
+    bundle = milestone_2()
+    # Train using Trainer for 2 steps in temporary directory to verify pipeline
+    result = milestone_3(
+        model=bundle.model,
+        tokenizer=bundle.tokenizer,
+        max_steps=2,
+        output_dir=str(tmp_path / "trainer_ckpt"),
+    )
+
+    assert isinstance(result, dict)
+    assert "trainer" in result
+    assert isinstance(result["trainer"], Trainer)
+    assert "train_loss" in result
+    assert result["train_loss"] is not None
+    assert result["train_loss"] > 0
+
 
 
 # Milestone 4: Implement a function to classify new document text.

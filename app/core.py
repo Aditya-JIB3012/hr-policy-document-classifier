@@ -241,10 +241,108 @@ def milestone_2(model_name: str = "gpt2", categories: list[str] | None = None):
 
 
 
+def prepare_dataset_for_training(tokenizer: GPT2Tokenizer, examples: list[dict] | None = None, max_length: int = 128) -> Dataset:
+    """Format and tokenize HR examples for causal language modeling."""
+    if examples is None:
+        examples = HR_EXAMPLES
+
+    texts = [
+        f"{ex['text'].strip()} <{ex['category']}>{tokenizer.eos_token}"
+        for ex in examples
+    ]
+
+    tokenized = tokenizer(
+        texts,
+        truncation=True,
+        max_length=max_length,
+        padding=False,
+    )
+    return Dataset.from_dict(tokenized)
+
+
+def train_hr_model(
+    model: GPT2LMHeadModel | None = None,
+    tokenizer: GPT2Tokenizer | None = None,
+    dataset: Dataset | None = None,
+    output_dir: str = "data/checkpoints",
+    epochs: int = 1,
+    batch_size: int = 4,
+    learning_rate: float = 5e-5,
+    max_steps: int | None = None,
+    save_model: bool = False,
+):
+    """Fine-tune the extended GPT-2 model using Hugging Face Trainer."""
+    if tokenizer is None or model is None:
+        bundle = extend_tokenizer_and_model()
+        tokenizer, model = bundle.tokenizer, bundle.model
+
+    if dataset is None:
+        dataset = prepare_dataset_for_training(tokenizer)
+
+    data_collator = DataCollatorForLanguageModeling(
+        tokenizer=tokenizer,
+        mlm=False,
+    )
+
+    training_kwargs = {
+        "output_dir": output_dir,
+        "per_device_train_batch_size": batch_size,
+        "learning_rate": learning_rate,
+        "save_strategy": "no",
+        "logging_steps": 5,
+        "report_to": "none",
+        "use_cpu": True,
+    }
+
+    if max_steps is not None and max_steps > 0:
+        training_kwargs["max_steps"] = max_steps
+    else:
+        training_kwargs["num_train_epochs"] = epochs
+
+    training_args = TrainingArguments(**training_kwargs)
+
+    trainer = Trainer(
+        model=model,
+        args=training_args,
+        train_dataset=dataset,
+        data_collator=data_collator,
+    )
+
+    train_result = trainer.train()
+
+    if save_model:
+        os.makedirs(output_dir, exist_ok=True)
+        model.save_pretrained(output_dir)
+        tokenizer.save_pretrained(output_dir)
+
+    return {
+        "model": model,
+        "tokenizer": tokenizer,
+        "trainer": trainer,
+        "train_loss": train_result.training_loss,
+        "metrics": train_result.metrics,
+    }
+
+
 # --- Milestone 3: Train the model using the prepared dataset and Hugging Face Trainer.
 # Hint: Model Training: Use the Hugging Face `Trainer` class to fine-tune your extended GPT-2 model on the labeled HR dataset.
-def milestone_3():  # TODO(milestone 3)
-    raise NotImplementedError("TODO(milestone 3)")
+def milestone_3(
+    model: GPT2LMHeadModel | None = None,
+    tokenizer: GPT2Tokenizer | None = None,
+    epochs: int = 1,
+    batch_size: int = 4,
+    max_steps: int | None = None,
+    output_dir: str = "data/checkpoints",
+):
+    """Train the model using the prepared dataset and Hugging Face Trainer."""
+    return train_hr_model(
+        model=model,
+        tokenizer=tokenizer,
+        epochs=epochs,
+        batch_size=batch_size,
+        max_steps=max_steps,
+        output_dir=output_dir,
+    )
 
 
 # --- Milestone 4: Implement a function to classify new document text.
