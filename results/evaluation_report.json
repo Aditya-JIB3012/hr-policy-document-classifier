@@ -1,0 +1,461 @@
+{
+  "model": "gpt2 (124M params) + 5 special tokens",
+  "training_data": "30 HR paragraphs across 5 categories",
+  "test_data": "15 held-out HR paragraphs (not in training set)",
+  "training_epochs": 3,
+  "training_loss": 3.9963,
+  "baseline_test_accuracy": 0.2667,
+  "training_set_accuracy": 0.3667,
+  "test_set_accuracy": 0.3333,
+  "per_category_test_accuracy": {
+    "leave_policy": {
+      "accuracy": 1.0,
+      "correct": 3,
+      "total": 3
+    },
+    "expense_claim": {
+      "accuracy": 0.6666666666666666,
+      "correct": 2,
+      "total": 3
+    },
+    "code_of_conduct": {
+      "accuracy": 0.0,
+      "correct": 0,
+      "total": 3
+    },
+    "remote_work": {
+      "accuracy": 0.0,
+      "correct": 0,
+      "total": 3
+    },
+    "health_safety": {
+      "accuracy": 0.0,
+      "correct": 0,
+      "total": 3
+    }
+  },
+  "baseline_predictions": [
+    {
+      "text": "Employees may request up to 10 days of unpaid leave annually for personal matters, subject to depart...",
+      "actual": "leave_policy",
+      "predicted": "leave_policy",
+      "correct": true,
+      "confidence": 0.2,
+      "scores": {
+        "leave_policy": 0.200022891163826,
+        "expense_claim": 0.19998779892921448,
+        "code_of_conduct": 0.19997406005859375,
+        "remote_work": 0.19999542832374573,
+        "health_safety": 0.20001983642578125
+      }
+    },
+    {
+      "text": "Maternity and paternity leave policies comply with federal and state regulations, granting eligible ...",
+      "actual": "leave_policy",
+      "predicted": "leave_policy",
+      "correct": true,
+      "confidence": 0.2,
+      "scores": {
+        "leave_policy": 0.20002594590187073,
+        "expense_claim": 0.19999389350414276,
+        "code_of_conduct": 0.19997559487819672,
+        "remote_work": 0.19999542832374573,
+        "health_safety": 0.20000915229320526
+      }
+    },
+    {
+      "text": "Jury duty leave is granted with full pay for the duration of service, and employees must provide cou...",
+      "actual": "leave_policy",
+      "predicted": "leave_policy",
+      "correct": true,
+      "confidence": 0.2,
+      "scores": {
+        "leave_policy": 0.20002441108226776,
+        "expense_claim": 0.1999923586845398,
+        "code_of_conduct": 0.19997406005859375,
+        "remote_work": 0.19999083876609802,
+        "health_safety": 0.20001830160617828
+      }
+    },
+    {
+      "text": "Conference registration fees for approved industry events are fully reimbursable when pre-authorized...",
+      "actual": "expense_claim",
+      "predicted": "leave_policy",
+      "correct": false,
+      "confidence": 0.2,
+      "scores": {
+        "leave_policy": 0.2000192254781723,
+        "expense_claim": 0.1999932825565338,
+        "code_of_conduct": 0.19997267425060272,
+        "remote_work": 0.19999785721302032,
+        "health_safety": 0.20001693069934845
+      }
+    },
+    {
+      "text": "Taxi and rideshare expenses for client meetings are reimbursable with digital receipts submitted thr...",
+      "actual": "expense_claim",
+      "predicted": "health_safety",
+      "correct": false,
+      "confidence": 0.2,
+      "scores": {
+        "leave_policy": 0.2000138908624649,
+        "expense_claim": 0.20000548660755157,
+        "code_of_conduct": 0.19996963441371918,
+        "remote_work": 0.19999176263809204,
+        "health_safety": 0.2000192254781723
+      }
+    },
+    {
+      "text": "Employees may claim up to $200 per month for mobile phone costs when their role requires frequent cl...",
+      "actual": "expense_claim",
+      "predicted": "health_safety",
+      "correct": false,
+      "confidence": 0.2,
+      "scores": {
+        "leave_policy": 0.20001740753650665,
+        "expense_claim": 0.19999755918979645,
+        "code_of_conduct": 0.19997161626815796,
+        "remote_work": 0.1999945044517517,
+        "health_safety": 0.20001892745494843
+      }
+    },
+    {
+      "text": "Employees are prohibited from using company resources, including email and internet access, for pers...",
+      "actual": "code_of_conduct",
+      "predicted": "leave_policy",
+      "correct": false,
+      "confidence": 0.2,
+      "scores": {
+        "leave_policy": 0.20002076029777527,
+        "expense_claim": 0.19998948276042938,
+        "code_of_conduct": 0.19997650384902954,
+        "remote_work": 0.1999986320734024,
+        "health_safety": 0.2000146508216858
+      }
+    },
+    {
+      "text": "All staff must complete mandatory anti-corruption and bribery training annually as part of regulator...",
+      "actual": "code_of_conduct",
+      "predicted": "leave_policy",
+      "correct": false,
+      "confidence": 0.2,
+      "scores": {
+        "leave_policy": 0.20002228021621704,
+        "expense_claim": 0.19998794794082642,
+        "code_of_conduct": 0.19997496902942657,
+        "remote_work": 0.19999481737613678,
+        "health_safety": 0.2000199854373932
+      }
+    },
+    {
+      "text": "Insider trading based on non-public company information is strictly prohibited and may result in cri...",
+      "actual": "code_of_conduct",
+      "predicted": "leave_policy",
+      "correct": false,
+      "confidence": 0.2,
+      "scores": {
+        "leave_policy": 0.20001739263534546,
+        "expense_claim": 0.19999907910823822,
+        "code_of_conduct": 0.1999792456626892,
+        "remote_work": 0.19999144971370697,
+        "health_safety": 0.20001281797885895
+      }
+    },
+    {
+      "text": "Remote employees must complete a home office safety checklist and submit photographic evidence of th...",
+      "actual": "remote_work",
+      "predicted": "health_safety",
+      "correct": false,
+      "confidence": 0.2,
+      "scores": {
+        "leave_policy": 0.2000180184841156,
+        "expense_claim": 0.19998902082443237,
+        "code_of_conduct": 0.19997528195381165,
+        "remote_work": 0.1999981701374054,
+        "health_safety": 0.20001953840255737
+      }
+    },
+    {
+      "text": "Video conferencing with cameras on is mandatory during all-hands meetings and client presentations f...",
+      "actual": "remote_work",
+      "predicted": "health_safety",
+      "correct": false,
+      "confidence": 0.2,
+      "scores": {
+        "leave_policy": 0.20001831650733948,
+        "expense_claim": 0.19999542832374573,
+        "code_of_conduct": 0.1999717652797699,
+        "remote_work": 0.19999542832374573,
+        "health_safety": 0.20001907646656036
+      }
+    },
+    {
+      "text": "International remote work requests require prior approval from HR and legal departments due to tax a...",
+      "actual": "remote_work",
+      "predicted": "leave_policy",
+      "correct": false,
+      "confidence": 0.2,
+      "scores": {
+        "leave_policy": 0.20002257823944092,
+        "expense_claim": 0.19999206066131592,
+        "code_of_conduct": 0.1999722272157669,
+        "remote_work": 0.19999663531780243,
+        "health_safety": 0.20001646876335144
+      }
+    },
+    {
+      "text": "All new hires must complete fire safety orientation within their first week, including hands-on exti...",
+      "actual": "health_safety",
+      "predicted": "health_safety",
+      "correct": true,
+      "confidence": 0.2,
+      "scores": {
+        "leave_policy": 0.20002028346061707,
+        "expense_claim": 0.1999882459640503,
+        "code_of_conduct": 0.1999722272157669,
+        "remote_work": 0.19999663531780243,
+        "health_safety": 0.20002257823944092
+      }
+    },
+    {
+      "text": "Hazardous material spill response kits are located in every laboratory and must be inspected monthly...",
+      "actual": "health_safety",
+      "predicted": "leave_policy",
+      "correct": false,
+      "confidence": 0.2,
+      "scores": {
+        "leave_policy": 0.20001739263534546,
+        "expense_claim": 0.19998230040073395,
+        "code_of_conduct": 0.19997619092464447,
+        "remote_work": 0.20000670850276947,
+        "health_safety": 0.20001739263534546
+      }
+    },
+    {
+      "text": "Mental health support services including counseling and an employee assistance program are available...",
+      "actual": "health_safety",
+      "predicted": "leave_policy",
+      "correct": false,
+      "confidence": 0.2,
+      "scores": {
+        "leave_policy": 0.2000192254781723,
+        "expense_claim": 0.19999480247497559,
+        "code_of_conduct": 0.19997496902942657,
+        "remote_work": 0.19999480247497559,
+        "health_safety": 0.20001617074012756
+      }
+    }
+  ],
+  "test_predictions": [
+    {
+      "text": "Employees may request up to 10 days of unpaid leave annually for personal matters, subject to depart...",
+      "actual": "leave_policy",
+      "predicted": "leave_policy",
+      "correct": true,
+      "confidence": 0.203,
+      "scores": {
+        "leave_policy": 0.2029949128627777,
+        "expense_claim": 0.2021981179714203,
+        "code_of_conduct": 0.20085126161575317,
+        "remote_work": 0.19507834315299988,
+        "health_safety": 0.19887736439704895
+      }
+    },
+    {
+      "text": "Maternity and paternity leave policies comply with federal and state regulations, granting eligible ...",
+      "actual": "leave_policy",
+      "predicted": "leave_policy",
+      "correct": true,
+      "confidence": 0.2035,
+      "scores": {
+        "leave_policy": 0.2034599781036377,
+        "expense_claim": 0.20226052403450012,
+        "code_of_conduct": 0.20089945197105408,
+        "remote_work": 0.19493022561073303,
+        "health_safety": 0.19844986498355865
+      }
+    },
+    {
+      "text": "Jury duty leave is granted with full pay for the duration of service, and employees must provide cou...",
+      "actual": "leave_policy",
+      "predicted": "leave_policy",
+      "correct": true,
+      "confidence": 0.203,
+      "scores": {
+        "leave_policy": 0.20298287272453308,
+        "expense_claim": 0.20238365232944489,
+        "code_of_conduct": 0.2010800540447235,
+        "remote_work": 0.19489942491054535,
+        "health_safety": 0.19865402579307556
+      }
+    },
+    {
+      "text": "Conference registration fees for approved industry events are fully reimbursable when pre-authorized...",
+      "actual": "expense_claim",
+      "predicted": "expense_claim",
+      "correct": true,
+      "confidence": 0.2024,
+      "scores": {
+        "leave_policy": 0.20230627059936523,
+        "expense_claim": 0.20242437720298767,
+        "code_of_conduct": 0.2009648233652115,
+        "remote_work": 0.19522587954998016,
+        "health_safety": 0.19907864928245544
+      }
+    },
+    {
+      "text": "Taxi and rideshare expenses for client meetings are reimbursable with digital receipts submitted thr...",
+      "actual": "expense_claim",
+      "predicted": "expense_claim",
+      "correct": true,
+      "confidence": 0.2027,
+      "scores": {
+        "leave_policy": 0.2021963894367218,
+        "expense_claim": 0.202672079205513,
+        "code_of_conduct": 0.20078060030937195,
+        "remote_work": 0.19538575410842896,
+        "health_safety": 0.19896520674228668
+      }
+    },
+    {
+      "text": "Employees may claim up to $200 per month for mobile phone costs when their role requires frequent cl...",
+      "actual": "expense_claim",
+      "predicted": "leave_policy",
+      "correct": false,
+      "confidence": 0.2026,
+      "scores": {
+        "leave_policy": 0.20262570679187775,
+        "expense_claim": 0.20237542688846588,
+        "code_of_conduct": 0.20079898834228516,
+        "remote_work": 0.1952650547027588,
+        "health_safety": 0.198934867978096
+      }
+    },
+    {
+      "text": "Employees are prohibited from using company resources, including email and internet access, for pers...",
+      "actual": "code_of_conduct",
+      "predicted": "leave_policy",
+      "correct": false,
+      "confidence": 0.2021,
+      "scores": {
+        "leave_policy": 0.20212233066558838,
+        "expense_claim": 0.20190192759037018,
+        "code_of_conduct": 0.20131053030490875,
+        "remote_work": 0.19539391994476318,
+        "health_safety": 0.1992712914943695
+      }
+    },
+    {
+      "text": "All staff must complete mandatory anti-corruption and bribery training annually as part of regulator...",
+      "actual": "code_of_conduct",
+      "predicted": "leave_policy",
+      "correct": false,
+      "confidence": 0.2021,
+      "scores": {
+        "leave_policy": 0.20206600427627563,
+        "expense_claim": 0.20151177048683167,
+        "code_of_conduct": 0.20097823441028595,
+        "remote_work": 0.19604118168354034,
+        "health_safety": 0.1994027942419052
+      }
+    },
+    {
+      "text": "Insider trading based on non-public company information is strictly prohibited and may result in cri...",
+      "actual": "code_of_conduct",
+      "predicted": "leave_policy",
+      "correct": false,
+      "confidence": 0.2021,
+      "scores": {
+        "leave_policy": 0.20213964581489563,
+        "expense_claim": 0.2020825892686844,
+        "code_of_conduct": 0.20141303539276123,
+        "remote_work": 0.19537489116191864,
+        "health_safety": 0.19898982346057892
+      }
+    },
+    {
+      "text": "Remote employees must complete a home office safety checklist and submit photographic evidence of th...",
+      "actual": "remote_work",
+      "predicted": "expense_claim",
+      "correct": false,
+      "confidence": 0.2022,
+      "scores": {
+        "leave_policy": 0.2020128220319748,
+        "expense_claim": 0.2022394984960556,
+        "code_of_conduct": 0.20098741352558136,
+        "remote_work": 0.19480293989181519,
+        "health_safety": 0.19995731115341187
+      }
+    },
+    {
+      "text": "Video conferencing with cameras on is mandatory during all-hands meetings and client presentations f...",
+      "actual": "remote_work",
+      "predicted": "expense_claim",
+      "correct": false,
+      "confidence": 0.202,
+      "scores": {
+        "leave_policy": 0.20183242857456207,
+        "expense_claim": 0.20202499628067017,
+        "code_of_conduct": 0.20109081268310547,
+        "remote_work": 0.19559134542942047,
+        "health_safety": 0.1994604617357254
+      }
+    },
+    {
+      "text": "International remote work requests require prior approval from HR and legal departments due to tax a...",
+      "actual": "remote_work",
+      "predicted": "leave_policy",
+      "correct": false,
+      "confidence": 0.2025,
+      "scores": {
+        "leave_policy": 0.20252063870429993,
+        "expense_claim": 0.20220105350017548,
+        "code_of_conduct": 0.2010665386915207,
+        "remote_work": 0.19532468914985657,
+        "health_safety": 0.19888707995414734
+      }
+    },
+    {
+      "text": "All new hires must complete fire safety orientation within their first week, including hands-on exti...",
+      "actual": "health_safety",
+      "predicted": "leave_policy",
+      "correct": false,
+      "confidence": 0.2022,
+      "scores": {
+        "leave_policy": 0.20220492780208588,
+        "expense_claim": 0.20170417428016663,
+        "code_of_conduct": 0.2007768154144287,
+        "remote_work": 0.1954275518655777,
+        "health_safety": 0.1998865306377411
+      }
+    },
+    {
+      "text": "Hazardous material spill response kits are located in every laboratory and must be inspected monthly...",
+      "actual": "health_safety",
+      "predicted": "expense_claim",
+      "correct": false,
+      "confidence": 0.2019,
+      "scores": {
+        "leave_policy": 0.20178748667240143,
+        "expense_claim": 0.20193380117416382,
+        "code_of_conduct": 0.20079387724399567,
+        "remote_work": 0.19503377377986908,
+        "health_safety": 0.20045103132724762
+      }
+    },
+    {
+      "text": "Mental health support services including counseling and an employee assistance program are available...",
+      "actual": "health_safety",
+      "predicted": "leave_policy",
+      "correct": false,
+      "confidence": 0.2027,
+      "scores": {
+        "leave_policy": 0.20272909104824066,
+        "expense_claim": 0.20217381417751312,
+        "code_of_conduct": 0.20084397494792938,
+        "remote_work": 0.19512410461902618,
+        "health_safety": 0.19912901520729065
+      }
+    }
+  ]
+}
