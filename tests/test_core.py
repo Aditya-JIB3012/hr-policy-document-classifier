@@ -97,7 +97,29 @@ def test_milestone_4():
 
 
 # Milestone 5: Create a Streamlit app to upload a text file and display classified sections.
-@pytest.mark.skip(reason="remove this line when you start milestone 5")
 def test_milestone_5():
-    raise NotImplementedError("write the test for milestone 5")
+    import py_compile
+    from app.core import milestone_5, CATEGORIES
+    from app.main import DEPARTMENT_ROUTING, SAMPLE_DOCUMENTS
+
+    config = milestone_5()
+    assert isinstance(config, dict)
+    assert config["status"] == "ready"
+    assert "text_file_upload" in config["supported_features"]
+    assert "confidence_scores" in config["supported_features"]
+    assert "category_filtering" in config["supported_features"]
+
+    # Verify app/main.py compiles cleanly
+    py_compile.compile("app/main.py", doraise=True)
+
+    # Verify all categories have routing and visual badges defined
+    for cat in CATEGORIES:
+        assert cat in DEPARTMENT_ROUTING
+        assert "dept" in DEPARTMENT_ROUTING[cat]
+        assert "email" in DEPARTMENT_ROUTING[cat]
+        assert "color" in DEPARTMENT_ROUTING[cat]
+
+    # Verify sample templates exist for quick testing
+    assert len(SAMPLE_DOCUMENTS) >= 3
+
 

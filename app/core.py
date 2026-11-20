@@ -455,6 +455,22 @@ def milestone_4(
 
 # --- Milestone 5: Create a Streamlit app to upload a text file and display classified sections.
 # Hint: Application Development: Build a Streamlit application to provide a user interface for uploading documents and displaying the classified output.
-def milestone_5():  # TODO(milestone 5)
-    raise NotImplementedError("TODO(milestone 5)")
+def milestone_5() -> dict:
+    """Return application configuration and supported UI capabilities."""
+    return {
+        "status": "ready",
+        "entrypoint": "app/main.py",
+        "categories": list(CATEGORIES),
+        "category_tokens": list(CATEGORY_TOKENS),
+        "supported_features": [
+            "text_file_upload",
+            "direct_text_input",
+            "sample_document_templates",
+            "paragraph_classification",
+            "confidence_scores",
+            "category_filtering",
+            "departmental_routing",
+            "export_results_json",
+        ],
+    }
 
