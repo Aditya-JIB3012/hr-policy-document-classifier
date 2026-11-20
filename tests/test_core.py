@@ -66,9 +66,34 @@ def test_milestone_3(tmp_path):
 
 
 # Milestone 4: Implement a function to classify new document text.
-@pytest.mark.skip(reason="remove this line when you start milestone 4")
 def test_milestone_4():
-    raise NotImplementedError("write the test for milestone 4")
+    from app.core import milestone_2, milestone_4, classify_document, CATEGORIES
+
+    bundle = milestone_2()
+    tokenizer, model = bundle
+
+    # Single paragraph inference
+    sample_text = "Sick leave certificates are required for absences extending past three consecutive days."
+    res = milestone_4(sample_text, model=model, tokenizer=tokenizer)
+    assert isinstance(res, dict)
+    assert res["category"] in CATEGORIES
+    assert res["tag"] == f"<{res['category']}>"
+    assert 0.0 <= res["confidence"] <= 1.0
+    assert len(res["scores"]) == len(CATEGORIES)
+    assert sample_text in res["tagged_text"]
+
+    # Multi-paragraph document inference
+    multi_doc = (
+        "All employees are entitled to 20 days paid leave per year.\n\n"
+        "Business mileage is reimbursed at $0.60 per mile driven."
+    )
+    doc_results = classify_document(multi_doc, model=model, tokenizer=tokenizer)
+    assert isinstance(doc_results, list)
+    assert len(doc_results) == 2
+    for item in doc_results:
+        assert item["category"] in CATEGORIES
+        assert "confidence" in item
+
 
 
 # Milestone 5: Create a Streamlit app to upload a text file and display classified sections.

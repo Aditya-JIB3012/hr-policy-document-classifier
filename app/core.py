@@ -345,10 +345,112 @@ def milestone_3(
     )
 
 
+def split_document_into_paragraphs(document_text: str) -> list[str]:
+    """Split a document text into non-empty paragraphs."""
+    raw_blocks = document_text.replace("\r\n", "\n").split("\n\n")
+    paragraphs = []
+    for block in raw_blocks:
+        cleaned = block.strip()
+        if cleaned:
+            paragraphs.append(cleaned)
+    if not paragraphs and document_text.strip():
+        paragraphs = [document_text.strip()]
+    return paragraphs
+
+
+def classify_paragraph(
+    paragraph: str,
+    model: GPT2LMHeadModel | None = None,
+    tokenizer: GPT2Tokenizer | None = None,
+    categories: list[str] | None = None,
+) -> dict:
+    """Classify a single HR paragraph into a category and predict category tag."""
+    if categories is None:
+        categories = CATEGORIES
+
+    if tokenizer is None or model is None:
+        bundle = extend_tokenizer_and_model(categories=categories)
+        tokenizer, model = bundle.tokenizer, bundle.model
+
+    model.eval()
+    cleaned_text = paragraph.strip()
+
+    prompt = f"{cleaned_text} "
+    inputs = tokenizer(prompt, return_tensors="pt")
+
+    category_tokens = [f"<{cat}>" if not (cat.startswith("<") and cat.endswith(">")) else cat for cat in categories]
+    category_names = [tok.strip("<>") for tok in category_tokens]
+    cat_token_ids = [tokenizer.convert_tokens_to_ids(tok) for tok in category_tokens]
+
+    with torch.no_grad():
+        outputs = model(**inputs)
+        last_logits = outputs.logits[0, -1, :]
+        candidate_logits = torch.stack([last_logits[tid] for tid in cat_token_ids])
+        probabilities = torch.softmax(candidate_logits, dim=0)
+
+    best_idx = torch.argmax(probabilities).item()
+    pred_cat = category_names[best_idx]
+    pred_tag = category_tokens[best_idx]
+    confidence = probabilities[best_idx].item()
+
+    scores_dict = {
+        name: float(probabilities[i].item())
+        for i, name in enumerate(category_names)
+    }
+
+    return {
+        "paragraph": cleaned_text,
+        "category": pred_cat,
+        "tag": pred_tag,
+        "tagged_text": f"{cleaned_text} {pred_tag}",
+        "confidence": float(round(confidence, 4)),
+        "scores": scores_dict,
+    }
+
+
+def classify_document(
+    document_text: str,
+    model: GPT2LMHeadModel | None = None,
+    tokenizer: GPT2Tokenizer | None = None,
+    categories: list[str] | None = None,
+) -> list[dict]:
+    """Classify all paragraphs in an HR document text."""
+    paragraphs = split_document_into_paragraphs(document_text)
+    if not paragraphs:
+        return []
+
+    if tokenizer is None or model is None:
+        bundle = extend_tokenizer_and_model(categories=categories)
+        tokenizer, model = bundle.tokenizer, bundle.model
+
+    results = []
+    for para in paragraphs:
+        res = classify_paragraph(
+            para,
+            model=model,
+            tokenizer=tokenizer,
+            categories=categories,
+        )
+        results.append(res)
+    return results
+
+
 # --- Milestone 4: Implement a function to classify new document text.
 # Hint: Inference Pipeline: Develop a Python function that takes new document text and uses your fine-tuned model to predict and generate category tags.
-def milestone_4():  # TODO(milestone 4)
-    raise NotImplementedError("TODO(milestone 4)")
+def milestone_4(
+    text: str | None = None,
+    model: GPT2LMHeadModel | None = None,
+    tokenizer: GPT2Tokenizer | None = None,
+):
+    """Classify new HR document text and predict category tags."""
+    if text is None:
+        text = "Employees travelling on company business may claim meals up to $60 per day with receipts."
+
+    paragraphs = split_document_into_paragraphs(text)
+    if len(paragraphs) <= 1:
+        return classify_paragraph(text, model=model, tokenizer=tokenizer)
+    return classify_document(text, model=model, tokenizer=tokenizer)
+
 
 
 # --- Milestone 5: Create a Streamlit app to upload a text file and display classified sections.
