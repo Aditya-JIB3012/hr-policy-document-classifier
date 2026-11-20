@@ -7,6 +7,7 @@ import torch
 from datasets import Dataset
 from transformers import (
     GPT2Tokenizer,
+    AutoTokenizer,
     GPT2LMHeadModel,
     Trainer,
     TrainingArguments,
@@ -206,9 +207,13 @@ class ExtendedModelBundle:
 
 
 def _load_pretrained(cls, model_name: str, **kwargs):
-    """Load model/tokenizer, trying local cache first to avoid slow network timeouts."""
+    """Load model/tokenizer, trying local cache first, validating it is non-empty, and falling back to download."""
     try:
-        return cls.from_pretrained(model_name, local_files_only=True, **kwargs)
+        obj = cls.from_pretrained(model_name, local_files_only=True, **kwargs)
+        # GPT2Tokenizer returns a dummy object with vocab_size=0 when local files don't exist
+        if hasattr(obj, "vocab_size") and obj.vocab_size == 0:
+            raise ValueError(f"Loaded empty tokenizer from local files for {model_name}")
+        return obj
     except Exception:
         return cls.from_pretrained(model_name, **kwargs)
 
@@ -220,7 +225,12 @@ def extend_tokenizer_and_model(model_name: str = "gpt2", categories: list[str] |
 
     special_tokens = [f"<{cat}>" if not (cat.startswith("<") and cat.endswith(">")) else cat for cat in categories]
 
-    tokenizer = _load_pretrained(GPT2Tokenizer, model_name)
+    # Try AutoTokenizer first, falling back to GPT2Tokenizer
+    try:
+        tokenizer = _load_pretrained(AutoTokenizer, model_name)
+    except Exception:
+        tokenizer = _load_pretrained(GPT2Tokenizer, model_name)
+
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
 

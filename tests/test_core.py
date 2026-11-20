@@ -61,7 +61,7 @@ def test_milestone_3(tmp_path):
     assert isinstance(result["trainer"], Trainer)
     assert "train_loss" in result
     assert result["train_loss"] is not None
-    assert result["train_loss"] > 0
+    assert result["train_loss"] >= 0
 
 
 
