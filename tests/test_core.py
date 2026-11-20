@@ -22,9 +22,24 @@ def test_milestone_1():
 
 
 # Milestone 2: Extend the GPT-2 tokenizer and model for these HR categories.
-@pytest.mark.skip(reason="remove this line when you start milestone 2")
 def test_milestone_2():
-    raise NotImplementedError("write the test for milestone 2")
+    from app.core import milestone_2, CATEGORIES, CATEGORY_TOKENS
+    bundle = milestone_2()
+    tokenizer, model = bundle
+
+    # Verify special tokens are present in tokenizer
+    for token in CATEGORY_TOKENS:
+        token_id = tokenizer.convert_tokens_to_ids(token)
+        assert token_id is not None
+        assert token_id != tokenizer.unk_token_id
+
+    # Verify tokenizer vocab size has grown by category tokens
+    assert len(tokenizer) == 50257 + len(CATEGORIES)
+
+    # Verify model embedding matrix was resized to match tokenizer vocab
+    embedding_weight = model.get_input_embeddings().weight
+    assert embedding_weight.shape[0] == len(tokenizer)
+
 
 
 # Milestone 3: Train the model using the prepared dataset and Hugging Face Trainer.

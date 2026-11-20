@@ -185,10 +185,60 @@ def milestone_1() -> dict:
     }
 
 
+class ExtendedModelBundle:
+    """Helper bundle holding extended tokenizer and model."""
+    def __init__(self, tokenizer, model, special_tokens):
+        self.tokenizer = tokenizer
+        self.model = model
+        self.special_tokens = special_tokens
+
+    def __iter__(self):
+        return iter((self.tokenizer, self.model))
+
+    def __getitem__(self, item):
+        if item == 0 or item == "tokenizer":
+            return self.tokenizer
+        elif item == 1 or item == "model":
+            return self.model
+        elif item == "special_tokens":
+            return self.special_tokens
+        raise KeyError(item)
+
+
+def _load_pretrained(cls, model_name: str, **kwargs):
+    """Load model/tokenizer, trying local cache first to avoid slow network timeouts."""
+    try:
+        return cls.from_pretrained(model_name, local_files_only=True, **kwargs)
+    except Exception:
+        return cls.from_pretrained(model_name, **kwargs)
+
+
+def extend_tokenizer_and_model(model_name: str = "gpt2", categories: list[str] | None = None):
+    """Extend GPT-2 tokenizer and model with special tokens for HR categories."""
+    if categories is None:
+        categories = CATEGORIES
+
+    special_tokens = [f"<{cat}>" if not (cat.startswith("<") and cat.endswith(">")) else cat for cat in categories]
+
+    tokenizer = _load_pretrained(GPT2Tokenizer, model_name)
+    if tokenizer.pad_token is None:
+        tokenizer.pad_token = tokenizer.eos_token
+
+    tokenizer.add_special_tokens({"additional_special_tokens": special_tokens})
+
+    model = _load_pretrained(GPT2LMHeadModel, model_name)
+    model.config.pad_token_id = tokenizer.pad_token_id
+    model.resize_token_embeddings(len(tokenizer))
+
+    return ExtendedModelBundle(tokenizer, model, special_tokens)
+
+
 # --- Milestone 2: Extend the GPT-2 tokenizer and model for these HR categories.
 # Hint: Tokenizer/Model Extension: Modify the GPT-2 tokenizer and model to incorporate new special tokens for your HR categories, as shown in the `Fine-Tune GPT-2` drill.
-def milestone_2():  # TODO(milestone 2)
-    raise NotImplementedError("TODO(milestone 2)")
+def milestone_2(model_name: str = "gpt2", categories: list[str] | None = None):
+    """Extend the GPT-2 tokenizer and model with HR category special tokens."""
+    return extend_tokenizer_and_model(model_name=model_name, categories=categories)
+
 
 
 # --- Milestone 3: Train the model using the prepared dataset and Hugging Face Trainer.
